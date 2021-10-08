@@ -1,7 +1,7 @@
 .contactsForm {
   display: flex;
   flex-direction: column;
-  width: 350px;
+  width: 400px;
   border: solid 1px black;
   padding: 15px;
 }

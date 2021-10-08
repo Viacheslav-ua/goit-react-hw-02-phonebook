@@ -1,19 +1,18 @@
 import React, { Component } from "react";
-import "./App.css";
 import ContactForm from "./components/ContactForm";
 import ContactList from "./components/ContactList";
+import Filter from "./components/Filter";
 import S from "./App.module.css";
+
 type contactsType = {
   id: string;
-  name?: string;
-  number?: string;
+  name: string;
+  number: string;
 };
 
 interface StateType {
   contacts: contactsType[];
-  filter?: string;
-  name?: string;
-  number?: string;
+  filter: string;
 }
 
 class App extends Component {
@@ -25,20 +24,24 @@ class App extends Component {
       { id: "id-4", name: "Annie Copeland", number: "227-91-26" },
     ],
     filter: "",
-    name: "",
-    number: "",
   };
 
-  handleAddContact = (e: React.MouseEvent<HTMLButtonElement>) => {
-    console.log("ggg");
+  findName = (str: string): boolean => {
+    return this.state.contacts.find((item) =>
+      item.name.toLowerCase().includes(str.toLowerCase())
+    )
+      ? true
+      : false;
   };
 
-  handleAddName = (e: React.MouseEvent<HTMLInputElement>) => {
-    console.log("fff");
+  formSubmitHandler = (data: StateType) => {
+    this.setState((prevState: StateType) => ({
+      contacts: [...prevState.contacts, data],
+    }));
   };
 
-  handleAddNumber = (e: React.MouseEvent<HTMLInputElement>) => {
-    console.log("fff");
+  changeFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ filter: e.currentTarget.value });
   };
 
   deleteContact = (id: string): void => {
@@ -49,18 +52,21 @@ class App extends Component {
 
   render() {
     return (
-      <div>
+      <div className={S.container}>
         <h1>Phonebook</h1>
         <ContactForm
-          handleAddContact={this.handleAddContact}
-          handleAddName={this.handleAddName}
-          handleAddNumber={this.handleAddNumber}
+          formSubmit={this.formSubmitHandler}
+          findName={this.findName}
         />
 
-        <h2>Contacts</h2>
-        {/* <Filter /> */}
+        <h2 className={S.title}>Contacts</h2>
+        <Filter
+          filterValue={this.state.filter}
+          handleChangeFilter={this.changeFilter}
+        />
         <ContactList
           list={this.state.contacts}
+          filterValue={this.state.filter}
           deleteContact={this.deleteContact}
         />
       </div>
